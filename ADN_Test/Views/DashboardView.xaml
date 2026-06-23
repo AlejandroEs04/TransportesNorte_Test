@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="ADN_Test.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ADN_Test.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </UserControl.Resources>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Registro de Embarques" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
+            <Button Content="Recargar" Command="{Binding RecargarCommand}" Width="100" Height="30"/>
+            <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" VerticalAlignment="Center" Margin="10,0,0,0"/>
+        </StackPanel>
+
+        <DataGrid Grid.Row="2" ItemsSource="{Binding Embarques}" IsReadOnly="True" AutoGenerateColumns="False" CanUserSortColumns="True"
+                  IsSynchronizedWithCurrentItem="True" MouseDoubleClick="DataGrid_MouseDoubleClick">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="50"/>
+                <DataGridTextColumn Header="Folio" Binding="{Binding Folio}" Width="100"/>
+                <DataGridTextColumn Header="Centro Operativo" Binding="{Binding Centro_Operativo_Id}" Width="120"/>
+                <DataGridTextColumn Header="Placa Tracto" Binding="{Binding Placa_Tracto}" Width="120"/>
+                <DataGridTextColumn Header="Conductor" Binding="{Binding Nombre_Conductor}" Width="150"/>
+                <DataGridTextColumn Header="Peso Tara" Binding="{Binding Peso_Tara}" Width="100"/>
+                <DataGridTextColumn Header="Peso Teórico ERP" Binding="{Binding Peso_Teorico_ERP}" Width="120"/>
+                <DataGridTextColumn Header="Peso Báscula Salida" Binding="{Binding Peso_Bascula_Salida}" Width="140"/>
+                <DataGridTextColumn Header="Peso Neto Real" Binding="{Binding Peso_Neto_Real}" Width="120"/>
+                <DataGridTextColumn Header="Justificación Diferencia" Binding="{Binding Justificacion_Diferencia}" Width="180"/>
+                <DataGridTextColumn Header="Fecha Registro" Binding="{Binding Fecha_Registro, StringFormat={}{0:dd/MM/yyyy HH:mm}}" Width="150"/>
+                <DataGridTextColumn Header="Fecha Salida" Binding="{Binding Fecha_Salida, StringFormat={}{0:dd/MM/yyyy HH:mm}}" Width="150"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Border Grid.Row="2" Background="#80FFFFFF" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <TextBlock Text="Cargando..." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
+        </Border>
+    </Grid>
+</UserControl>
