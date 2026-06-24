@@ -1,6 +1,7 @@
 ﻿using ADN_Test.Dtos;
 using ADN_Test.Models;
 using ADN_Test.Repositories;
+using System.Diagnostics;
 
 namespace ADN_Test.Services
 {
@@ -18,8 +19,9 @@ namespace ADN_Test.Services
 
         public async Task<int> GetOrCreateTractoAsync(string placa, decimal? pesoTara)
         {
-            var id = await _tractoRepository.GetByPlacaAsync(placa);
-            if (id.HasValue)
+            int? id = await _tractoRepository.GetByPlacaAsync(placa);
+
+            if (id.HasValue && id.Value != 0)
                 return id.Value;
 
             await _tractoRepository.CreateTractoAsync(new CreateTractoDto

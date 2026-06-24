@@ -18,8 +18,8 @@ namespace ADN_Test.Services
 
         public async Task<int> GetOrCreateCentroOperativoAsync(string nombre)
         {
-            var id = await _centroOperativoRepository.GetByNombreAsync(nombre);
-            if (id.HasValue)
+            int? id = await _centroOperativoRepository.GetByNombreAsync(nombre);
+            if (id.HasValue && id.Value != 0)
                 return id.Value;
 
             await _centroOperativoRepository.CreateCentroOperativoAsync(
