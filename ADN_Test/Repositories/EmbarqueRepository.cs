@@ -16,9 +16,15 @@ namespace ADN_Test.Repositories
             _dapper = new DataContextDapper();
         }
 
-        public async Task<IEnumerable<Embarque>> GetAllEmbarques()
+        public async Task<IEnumerable<EmbarqueResponseDto>> GetAllEmbarques()
         {
-            return await _dapper.Query<Embarque>("SELECT * FROM Embarque");
+            return await _dapper.Query<EmbarqueResponseDto>("SELECT * FROM vw_Embarque");
+        }
+
+        public async Task CreateEmbarque(EmbarqueInsertDto embarque)
+        {
+            await _dapper.Execute("sp_CreateEmbarque", 
+                new { embarque.Centro_Operativo_Id, embarque.Tracto_Id, embarque.Conductor_Id, embarque.Peso_Teorico_ERP });
         }
 
         public async Task UpdateSalida(EmbarqueUpdateSalida embarque)

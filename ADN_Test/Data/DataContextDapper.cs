@@ -20,12 +20,6 @@ namespace ADN_Test.Data
             return await db.QueryAsync<T>(sql, parameters);  
         }
 
-        public T? QuerySingle<T>(string sql, object? parameters = null)
-        {
-            using IDbConnection db = new SqlConnection(_connectionString);
-            return db.QuerySingleOrDefault<T>(sql, parameters);
-        }
-
         public async Task<bool> Execute(string sql, object? parameters = null)
         {
             using IDbConnection db = new SqlConnection(_connectionString);

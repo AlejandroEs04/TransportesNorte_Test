@@ -8,7 +8,8 @@ namespace ADN_Test.Repositories
 {
     internal interface IEmbarqueRepository
     {
-        Task<IEnumerable<Embarque>> GetAllEmbarques();
+        Task<IEnumerable<EmbarqueResponseDto>> GetAllEmbarques();
+        Task CreateEmbarque(EmbarqueInsertDto dto);
         Task UpdateSalida(EmbarqueUpdateSalida dto);
     }
 }

@@ -1,4 +1,5 @@
-﻿using ADN_Test.Models;
+﻿using ADN_Test.Dtos;
+using ADN_Test.Models;
 using ADN_Test.Repositories;
 using System;
 using System.Collections.Generic;
@@ -16,23 +17,19 @@ namespace ADN_Test.Service
             _embarqueRepository = new EmbarqueRepository();
         }
 
-        public async Task<IEnumerable<Embarque>> GetAll()
+        public async Task<IEnumerable<EmbarqueResponseDto>> GetAll()
         {
             return await _embarqueRepository.GetAllEmbarques();
         }
 
-        public async Task UpdateSalida(Embarque embarque)
+        public async Task CreateEmbarque(EmbarqueInsertDto dto)
         {
-            if (!embarque.Peso_Bascula_Salida.HasValue || !embarque.Peso_Neto_Real.HasValue)
-                throw new InvalidOperationException("Fields are required");
+            await _embarqueRepository.CreateEmbarque(dto);
+        }
 
-            await _embarqueRepository.UpdateSalida(new Dtos.EmbarqueUpdateSalida
-            {
-                Id = embarque.Id,
-                Peso_Bascula_Salida = embarque.Peso_Bascula_Salida.Value,
-                Peso_Neto_Real = embarque.Peso_Neto_Real.Value,
-                Justificacion_Diferencia = embarque.Justificacion_Diferencia
-            });
+        public async Task UpdateSalida(EmbarqueUpdateSalida dto)
+        {
+            await _embarqueRepository.UpdateSalida(dto);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using ADN_Test.Dtos;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace ADN_Test.Views
@@ -12,7 +13,7 @@ namespace ADN_Test.Views
 
         private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (DataContext is ViewModels.DashboardViewModel vm && sender is DataGrid dg && dg.SelectedItem is Models.Embarque embarque)
+            if (DataContext is ViewModels.DashboardViewModel vm && sender is DataGrid dg && dg.SelectedItem is EmbarqueResponseDto embarque)
             {
                 if (vm.AbrirDetalleCommand.CanExecute(embarque))
                     vm.AbrirDetalleCommand.Execute(embarque);
