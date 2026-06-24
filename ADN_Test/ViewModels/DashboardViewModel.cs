@@ -2,10 +2,12 @@
 using ADN_Test.Models;
 using ADN_Test.Service;
 using ADN_Test.Views;
+using Microsoft.Win32;
 using System;
 using System.Linq;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+
 namespace ADN_Test.ViewModels
 {
     public class DashboardViewModel : ViewModelBase
@@ -34,12 +36,15 @@ namespace ADN_Test.ViewModels
 
         public RelayCommand NuevoEmbarqueCommand { get; }
 
+        public AsyncRelayCommand ImportarExcelCommand { get; }
+
         public DashboardViewModel(IEmbarqueService embarqueService)
         {
             _embarqueService = embarqueService;
             RecargarCommand = new AsyncRelayCommand(CargarEmbarquesAsync);
             AbrirDetalleCommand = new RelayCommand(AbrirDetalle);
             NuevoEmbarqueCommand = new RelayCommand(NuevoEmbarque);
+            ImportarExcelCommand = new AsyncRelayCommand(ImportarExcelAsync);
             _ = CargarEmbarquesAsync();
         }
 
@@ -59,6 +64,55 @@ namespace ADN_Test.ViewModels
             var window = new CreateEmbarqueWindow(createVm);
             window.ShowDialog();
             _ = CargarEmbarquesAsync();
+        }
+
+        private async Task ImportarExcelAsync()
+        {
+            var dialog = new OpenFileDialog
+            {
+                Filter = "Archivos Excel (*.xlsx)|*.xlsx|Todos los archivos (*.*)|*.*",
+                Title = "Seleccionar archivo Excel de embarques"
+            };
+
+            if (dialog.ShowDialog() != true)
+                return;
+
+            IsLoading = true;
+            ErrorMessage = null;
+
+            try
+            {
+                var result = await _embarqueService.ImportFromExcelAsync(dialog.FileName);
+
+                var msg = $"Importación completada.\n\n" +
+                          $"Total de filas: {result.TotalRows}\n" +
+                          $"Procesadas correctamente: {result.SuccessCount}\n" +
+                          $"Errores: {result.ErrorCount}";
+
+                if (result.Errors.Count > 0)
+                {
+                    var detalles = string.Join("\n", result.Errors.Take(10));
+                    if (result.Errors.Count > 10)
+                        detalles += $"\n... y {result.Errors.Count - 10} error(es) más";
+                    msg += $"\n\nDetalles:\n{detalles}";
+                }
+
+                System.Windows.MessageBox.Show(msg, "Resultado de Importación",
+                    System.Windows.MessageBoxButton.OK,
+                    result.ErrorCount > 0
+                        ? System.Windows.MessageBoxImage.Warning
+                        : System.Windows.MessageBoxImage.Information);
+
+                await CargarEmbarquesAsync();
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Error al importar: {ex.Message}";
+            }
+            finally
+            {
+                IsLoading = false;
+            }
         }
 
         private async Task CargarEmbarquesAsync()

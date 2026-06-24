@@ -11,5 +11,6 @@ namespace ADN_Test.Service
         Task<IEnumerable<EmbarqueResponseDto>> GetAll();
         Task CreateEmbarque(EmbarqueInsertDto dto);
         Task UpdateSalida(EmbarqueUpdateSalida dto);
+        Task<EmbarqueImportResult> ImportFromExcelAsync(string filePath);
     }
 }

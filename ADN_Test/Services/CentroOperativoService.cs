@@ -1,8 +1,6 @@
+using ADN_Test.Dtos;
 using ADN_Test.Models;
 using ADN_Test.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ADN_Test.Services
 {
@@ -16,8 +14,20 @@ namespace ADN_Test.Services
         }
 
         public async Task<IEnumerable<CentroOperativo>> GetAll()
+            => await _centroOperativoRepository.GetAll();
+
+        public async Task<int> GetOrCreateCentroOperativoAsync(string nombre)
         {
-            return await _centroOperativoRepository.GetAll();
+            var id = await _centroOperativoRepository.GetByNombreAsync(nombre);
+            if (id.HasValue)
+                return id.Value;
+
+            await _centroOperativoRepository.CreateCentroOperativoAsync(
+                new CreateCentroOperativoDto { Nombre = nombre });
+
+            id = await _centroOperativoRepository.GetByNombreAsync(nombre);
+            return id ?? throw new InvalidOperationException(
+                $"No se pudo obtener el Id del centro operativo '{nombre}' tras insertarlo.");
         }
     }
 }
